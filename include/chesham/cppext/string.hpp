@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <string>
 #include <type_traits>
+#include <limits>
 
 namespace chesham
 {
@@ -14,12 +15,12 @@ namespace chesham
             underlying_type underlying;
         public:
             string_exted(const underlying_type& v) : underlying(v) {}
-            inline string_exted replace(const underlying_type& from, const underlying_type& to) const
+            inline string_exted replace(const underlying_type& from, const underlying_type& to, std::size_t limit = std::numeric_limits<std::size_t>::max()) const
             {
                 auto start = 0;
                 auto end = underlying.find(from);
                 underlying_type target;
-                while (end != underlying_type::npos)
+                while (end != underlying_type::npos && limit--)
                 {
                     auto offset = target.length();
                     target.resize(target.length() + end - start + to.length());
@@ -40,9 +41,9 @@ namespace chesham
                 return target;
             }
             template<typename T, typename U>
-            string_exted replace(const T& from, const U& to) const
+            string_exted replace(const T& from, const U& to, std::size_t limit = std::numeric_limits<std::size_t>::max()) const
             {
-                return replace(underlying_type(from), underlying_type(to));
+                return replace(underlying_type(from), underlying_type(to), limit);
             }
             operator underlying_type () noexcept
             {

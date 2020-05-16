@@ -42,5 +42,21 @@ namespace test
             auto actual = cppext::ext(src).replace(L"world"s, L"c++"s);
             Assert::AreEqual(expect, (decltype(expect))actual);
         }
+
+        TEST_METHOD(replace_limit_str)
+        {
+            auto src = "hello world heworldllo"s;
+            auto expect = "hello c++ heworldllo"s;
+            auto actual = cppext::ext(src).replace("world"s, "c++"s, 1);
+            Assert::AreEqual(expect, (decltype(expect))actual);
+        }
+
+        TEST_METHOD(replace_limit)
+        {
+            auto src = "hello world heworldllo"s;
+            auto expect = "hello c++ heworldllo"s;
+            auto actual = cppext::ext(src).replace("world", "c++"s, 1);
+            Assert::AreEqual(expect, (decltype(expect))actual);
+        }
     };
 }
