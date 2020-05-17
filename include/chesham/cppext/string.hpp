@@ -15,7 +15,7 @@ namespace chesham
         template<typename T>
         struct to_string<T, wchar_t, std::true_type>
         {
-            std::wstring operator()(const T& v) const
+            inline std::wstring operator()(const T& v) const
             {
                 return std::wstring(v);
             }
@@ -24,7 +24,7 @@ namespace chesham
         template<>
         struct to_string<std::wstring, wchar_t, std::false_type>
         {
-            std::wstring operator()(const std::wstring& v) const
+            inline const std::wstring& operator()(const std::wstring& v) const
             {
                 return v;
             }
@@ -33,7 +33,7 @@ namespace chesham
         template<typename T>
         struct to_string<T, char, std::false_type>
         {
-            std::string operator()(const T& v) const
+            inline std::string operator()(const T& v) const
             {
                 return std::string(v);
             }
@@ -42,7 +42,7 @@ namespace chesham
         template<>
         struct to_string<std::string, char, std::false_type>
         {
-            std::string operator()(const std::string& v) const
+            inline const std::string& operator()(const std::string& v) const
             {
                 return v;
             }
@@ -81,7 +81,7 @@ namespace chesham
                 return target;
             }
             template<typename T, typename U>
-            string_exted replace(const T& from, const U& to, std::size_t limit = std::numeric_limits<std::size_t>::max()) const
+            inline string_exted replace(const T& from, const U& to, std::size_t limit = std::numeric_limits<std::size_t>::max()) const
             {
                 return replace(to_string<T, C>{}(from), to_string<U, C>{}(to), limit);
             }
