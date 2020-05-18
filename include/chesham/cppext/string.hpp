@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <limits>
 #include <type_traits>
+#include <vector>
 
 namespace chesham
 {
@@ -103,6 +104,32 @@ namespace chesham
             {
                 return replace(to_string<T, C>{}(from), to_string<U, C>{}(to), limit);
             }
+            inline std::vector<underlying_type> split(const underlying_type& delimiter, bool skipEmpty = false, std::size_t limit = std::numeric_limits<std::size_t>::max()) const
+            {
+                std::vector<underlying_type> v;
+                std::size_t start = 0;
+                auto end = underlying.find(delimiter, start);
+                while (end != underlying_type::npos)
+                {
+                    if (!limit)
+                        return v;
+                    auto s = underlying.substr(start, end - start);
+                    if (!skipEmpty || !s.empty())
+                    {
+                        v.emplace_back(move(s));
+                        --limit;
+                    }
+                    start = end + delimiter.length();
+                    end = underlying.find(delimiter, start);
+                }
+                if (start <= underlying.length())
+                {
+                    auto s = underlying.substr(start);
+                    if (!skipEmpty || !s.empty())
+                        v.emplace_back(move(s));
+                }
+                return v;
+            }
             operator underlying_type () noexcept
             {
                 return underlying;
@@ -123,6 +150,12 @@ namespace chesham
 
         template<typename C>
         string_exted<C> ext(const std::basic_string<C>& s)
+        {
+            return string_exted<C>(s);
+        }
+
+        template<typename C>
+        string_exted<C> ext(const C* s)
         {
             return string_exted<C>(s);
         }
