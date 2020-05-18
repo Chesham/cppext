@@ -7,7 +7,7 @@ using namespace chesham;
 
 namespace test
 {
-    TEST_CLASS(string)
+    TEST_CLASS(string_tests)
     {
     public:
 
@@ -89,6 +89,38 @@ namespace test
             auto expect = "hello c++ heworldllo"s;
             auto actual = cppext::ext(src).replace("world", "c++"s, 1);
             Assert::AreEqual(expect, (decltype(expect))actual);
+        }
+
+        TEST_METHOD(split)
+        {
+            auto target = ",1,,2,3,4,5,6,";
+            auto expect = vector<string>{ "", "1", "", "2", "3", "4", "5", "6", "" };
+            auto actual = cppext::ext(target).split(",");
+            Assert::IsTrue(cppext::sequence_equal(expect.begin(), expect.end(), actual.begin(), actual.end()));
+        }
+
+        TEST_METHOD(split_limit)
+        {
+            auto target = ",1,,2,3,4,5,6,";
+            auto expect = vector<string>{ "", "1", "" };
+            auto actual = cppext::ext(target).split(",", false, 3);
+            Assert::IsTrue(cppext::sequence_equal(expect.begin(), expect.end(), actual.begin(), actual.end()));
+        }
+
+        TEST_METHOD(split_skipEmpty)
+        {
+            auto target = ",1,,2,3,4,5,6,";
+            auto expect = vector<string>{ "1", "2", "3", "4", "5", "6" };
+            auto actual = cppext::ext(target).split(",", true);
+            Assert::IsTrue(cppext::sequence_equal(expect.begin(), expect.end(), actual.begin(), actual.end()));
+        }
+
+        TEST_METHOD(split_skipEmpty_limit)
+        {
+            auto target = ",1,,2,3,4,5,6,";
+            auto expect = vector<string>{ "1", "2" };
+            auto actual = cppext::ext(target).split(",", true, 2);
+            Assert::IsTrue(cppext::sequence_equal(expect.begin(), expect.end(), actual.begin(), actual.end()));
         }
     };
 }
