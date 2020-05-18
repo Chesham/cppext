@@ -35,6 +35,14 @@ namespace test
             Assert::AreEqual(expect, (decltype(expect))actual);
         }
 
+        TEST_METHOD(replace_str_int)
+        {
+            auto src = "hello world heworldllo"s;
+            auto expect = "hello 123 he123llo"s;
+            auto actual = cppext::ext(src).replace("world", 123);
+            Assert::AreEqual(expect, (decltype(expect))actual);
+        }
+
         TEST_METHOD(replace_wcstr)
         {
             auto src = L"hello world heworldllo"s;
@@ -56,6 +64,14 @@ namespace test
             auto src = L"hello world heworldllo"s;
             auto expect = L"hello c++ hec++llo"s;
             auto actual = cppext::ext(src).replace(L"world"s, L"c++");
+            Assert::AreEqual(expect, (decltype(expect))actual);
+        }
+
+        TEST_METHOD(replace_wstr_int)
+        {
+            auto src = L"hello world heworldllo"s;
+            auto expect = L"hello 123 he123llo"s;
+            auto actual = cppext::ext(src).replace(L"world"s, 123);
             Assert::AreEqual(expect, (decltype(expect))actual);
         }
 

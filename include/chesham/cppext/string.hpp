@@ -9,20 +9,20 @@ namespace chesham
 {
     namespace cppext
     {
-        template<typename T, typename U = char, typename isWide = std::is_same<std::remove_all_extents<T>::type, wchar_t>::type>
+        template<typename T, typename U = char, typename V = std::remove_const<std::remove_reference<std::remove_pointer<std::remove_all_extents<T>::type>::type>::type>::type>
         struct to_string;
 
         template<typename T>
-        struct to_string<T, wchar_t, std::true_type>
+        struct to_string<T, wchar_t, wchar_t>
         {
-            inline std::wstring operator()(const T& v) const
+            inline std::wstring operator()(const wchar_t* v) const
             {
                 return std::wstring(v);
             }
         };
 
         template<>
-        struct to_string<std::wstring, wchar_t, std::false_type>
+        struct to_string<std::wstring, wchar_t, std::wstring>
         {
             inline const std::wstring& operator()(const std::wstring& v) const
             {
@@ -30,21 +30,39 @@ namespace chesham
             }
         };
 
-        template<typename T>
-        struct to_string<T, char, std::false_type>
+        template<typename T, typename V>
+        struct to_string<T, wchar_t, V>
         {
-            inline std::string operator()(const T& v) const
+            inline std::wstring operator()(const V& v) const
+            {
+                return std::to_wstring(v);
+            }
+        };
+
+        template<typename T>
+        struct to_string<T, char, char>
+        {
+            inline std::string operator()(const char* v) const
             {
                 return std::string(v);
             }
         };
 
         template<>
-        struct to_string<std::string, char, std::false_type>
+        struct to_string<std::string, char, std::string>
         {
             inline const std::string& operator()(const std::string& v) const
             {
                 return v;
+            }
+        };
+
+        template<typename T, typename V>
+        struct to_string<T, char, V>
+        {
+            inline std::string operator()(const V& v) const
+            {
+                return std::to_string(v);
             }
         };
 
