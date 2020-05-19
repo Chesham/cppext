@@ -21,6 +21,9 @@
     <ClCompile Include="string.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="algorithm.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

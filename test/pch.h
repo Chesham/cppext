@@ -8,5 +8,7 @@
 #define PCH_H
 
 // 請於此新增您要先行編譯的標頭
+#include <CppUnitTest.h>
+#include <chesham/cppext/cppext.hpp>
 
 #endif //PCH_H

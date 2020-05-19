@@ -1,6 +1,4 @@
 #include "pch.h"
-#include "CppUnitTest.h"
-#include <chesham/cppext/cppext.hpp>
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace chesham;
