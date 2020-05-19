@@ -6,11 +6,25 @@ cppext is an open-source, header-only extension library for C++.
 
   Just add `#include <chesham/cppext/cppext.hpp>` in your source code and `using namespace chesham`.
 
-  Then you can go with those extension methods such like replace, split for `std::string`.
+  Then you can go with those extension methods such as replace, split for `std::string`.
 
 ##  Samples
 
   For samples, please visit the source files under `cppext/test/` folder.
+
+### `sequence_equal`
+
+Test whether the elements in two ranges are equal sequentially, and the size of two ranges might be different.
+
+```cpp
+auto s1 = { 10, 20, 33, 50, 230, 70 };
+auto s2 = { 10, 20, 33, 50, 230, 70 };
+Assert::IsTrue(cppext::sequence_equal(begin(s1), end(s1), begin(s2), end(s2)));
+
+auto str1 = "hello world"s;
+auto str2 = "hello world"s;
+Assert::IsTrue(cppext::sequence_equal(str1.begin(), str1.end(), str2.begin(), str2.end()));
+```
 
 ### `string_exted::replace`
 
