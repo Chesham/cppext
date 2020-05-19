@@ -14,20 +14,20 @@ cppext is an open-source, header-only extension library for C++.
 
 ### `sequence_equal`
 
-Test whether the elements in two ranges are equal sequentially, and the size of two ranges might be different.
+  Test whether the elements in two ranges are equal sequentially, and the size of two ranges might be different.
 
-```cpp
-auto s1 = { 10, 20, 33, 50, 230, 70 };
-auto s2 = { 10, 20, 33, 50, 230, 70 };
-Assert::IsTrue(cppext::sequence_equal(begin(s1), end(s1), begin(s2), end(s2)));
+  ```cpp
+  auto s1 = { 10, 20, 33, 50, 230, 70 };
+  auto s2 = { 10, 20, 33, 50, 230, 70 };
+  Assert::IsTrue(cppext::sequence_equal(begin(s1), end(s1), begin(s2), end(s2)));
 
-auto s3 = { 10, 20, 33, 50, 70 };
-Assert::IsFalse(cppext::sequence_equal(begin(s1), end(s1), begin(s3), end(s3)));
+  auto s3 = { 10, 20, 33, 50, 70 };
+  Assert::IsFalse(cppext::sequence_equal(begin(s1), end(s1), begin(s3), end(s3)));
 
-auto str1 = "hello world"s;
-auto str2 = "hello world"s;
-Assert::IsTrue(cppext::sequence_equal(str1.begin(), str1.end(), str2.begin(), str2.end()));
-```
+  auto str1 = "hello world"s;
+  auto str2 = "hello world"s;
+  Assert::IsTrue(cppext::sequence_equal(str1.begin(), str1.end(), str2.begin(), str2.end()));
+  ```
 
 ### `string_exted::replace`
 
