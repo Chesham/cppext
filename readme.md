@@ -12,6 +12,143 @@ cppext is an open-source, header-only extension library for C++.
 
   For samples, please visit the source files under `cppext/test/` folder.
 
+### `subject/observer`
+
+  Provides a thread-safe, generic subject/observer pattern. The observer can exit at anytime.
+
+  ```cpp
+  subject sub;
+  auto isEventInvoked = false;
+  auto e = make_shared<decltype(sub)::event_type>([&](...) { isEventInvoked = true; });
+  sub += e;
+  sub.notify();
+  Assert::IsTrue(isEventInvoked);
+  ```
+
+  Observer exits with auto unsubscribes. (But **not** thread-safe, please use managed observer unless you need to manage it manually)
+
+  ```cpp
+  subject sub;
+  auto isEventInvoked = false;
+  auto e = make_shared<decltype(sub)::event_type>([&](...) { isEventInvoked = true; });
+  sub += e;
+  e.reset();
+  sub.notify();
+  Assert::IsFalse(isEventInvoked);
+  ```
+
+  With managed observer.
+
+  ```cpp
+  subject sub;
+  auto isEventInvoked = false;
+  auto e = sub += [&](...) { isEventInvoked = true; };
+  sub.notify();
+  Assert::IsTrue(isEventInvoked);
+  ```
+
+  Exited safely with managed observer in concurrent scenario.
+
+  ```cpp
+  auto isInvoked = false;
+  subject sub;
+  {
+      mutex mtx;
+      unique_lock<mutex> l(mtx);
+      condition_variable waiter;
+      auto isReleased = false;
+      auto suber = sub += [&](...)
+      {
+          unique_lock<mutex> l(mtx);
+          isInvoked = true;
+          waiter.notify_one();
+          Logger::WriteMessage("event invoked\n");
+          while (!waiter.wait_for(l, 10ms, [&] { return isReleased; }));
+          Logger::WriteMessage("event completed\n");
+      };
+      auto task = async([&] { sub.notify(); });
+      auto cleanTask = async([&, suber = move(suber)]() mutable
+      {
+          unique_lock<mutex> l(mtx);
+          waiter.wait(l, [&] { return isInvoked; });
+          isReleased = true;
+          l.unlock();
+          Logger::WriteMessage("subscriber exiting with auto synchronize ...\n");
+          suber = nullptr;
+          Logger::WriteMessage("subscriber exited\n");
+      });
+      l.unlock();
+  }
+  Assert::IsTrue(isInvoked);
+
+  // The log after executed
+  //    event invoked
+  //    subscriber exiting with auto synchronize ...
+  //    event completed
+  //    subscriber exited
+  ```
+
+  Deal with user-defined event arguments.
+  
+  ```cpp
+  struct my_event_args : public cppext::event_args
+  {
+      bool isCancelled{ false };
+  };
+
+  struct subject : public cppext::subject<cppext::event_args>
+  {
+      typedef cppext::subject<cppext::event_args> base;
+
+      void notify(my_event_args& args)
+      {
+          decltype(base::subs) subs;
+          {
+              lock_guard<mutex> l(base::mtx);
+              subs = base::subs;
+          }
+          for (auto& i : subs)
+          {
+              auto e = i.lock();
+              if (!e)
+                  continue;
+              try
+              {
+                  (*e)(this, args);
+                  if (args.isCancelled)
+                      break;
+              }
+              catch (const exception&)
+              {
+              }
+          }
+      }
+  };
+  
+  subject sub;
+  auto isSub1Invoked = false;
+  auto isSub2Invoked = false;
+  auto sub1 = sub += [&](auto, auto& e)
+  {
+      if (dynamic_cast<const my_event_args*>(&e))
+      {
+          auto& args = dynamic_cast<my_event_args&>(e);
+          args.isCancelled = true;
+          isSub1Invoked = true;
+      }
+  };
+  auto sub2 = sub += [&](auto, auto& e)
+  {
+      if (dynamic_cast<const my_event_args*>(&e))
+          isSub2Invoked = true;
+  };
+  my_event_args args;
+  sub.notify(args);
+  Assert::IsTrue(isSub1Invoked);
+  Assert::IsFalse(isSub2Invoked);
+  Assert::IsTrue(args.isCancelled);
+  ```
+
 ### `sequence_equal`
 
   Test whether the elements in two ranges are equal sequentially, and the size of two ranges might be different.
