@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 #include <functional>
 #include <memory>
 #include <mutex>
@@ -49,7 +50,7 @@ namespace chesham
                 std::weak_ptr<event_type> w(event);
                 event.reset();
                 while (!w.expired())
-                    this_thread::sleep_for(10ms);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
             }
         };
 
