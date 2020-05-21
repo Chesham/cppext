@@ -24,6 +24,9 @@
     <ClCompile Include="algorithm.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="event.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
