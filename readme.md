@@ -12,6 +12,26 @@ cppext is an open-source, header-only extension library for C++.
 
   For samples, please visit the source files under `cppext/test/` folder.
 
+### `asynchronous file I/O`
+
+Read file in bytes.
+
+```cpp
+auto target = make_shared<cppext::io::async_file>(R"(Lorem Ipsum.txt)");
+auto future = target->read_bytes(0, 10);
+// do other tasks
+Assert::AreEqual((size_t)10, future.get()->size());
+```
+
+Write string to file.
+
+```cpp
+auto target = make_shared<cppext::io::async_file>("output.txt", ios::out | ios::app);
+auto data = "hello world\n"s;
+auto fut = target->write_string(0, data);
+Assert::AreEqual(data.size(), fut.get());
+```
+
 ### `subject/observer`
 
   Provides a thread-safe, generic subject/observer pattern. The observer can exit at anytime.
