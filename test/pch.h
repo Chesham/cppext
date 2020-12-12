@@ -8,6 +8,10 @@
 #define PCH_H
 
 // 請於此新增您要先行編譯的標頭
+#include <crtdbg.h>
+#ifdef _DEBUG
+#define new new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#endif
 #include <CppUnitTest.h>
 #include <chesham/cppext/cppext.hpp>
 

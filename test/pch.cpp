@@ -3,3 +3,7 @@
 #include "pch.h"
 
 // 使用先行編譯的標頭時，需要來源檔案才能使編譯成功。
+TEST_MODULE_INITIALIZE(methodName)
+{
+    _CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF);
+}
