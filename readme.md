@@ -12,6 +12,65 @@ cppext is an open-source, header-only extension library for C++.
 
   For samples, please visit the source files under `cppext/test/` folder.
 
+### `asynchronous HTTP client`
+
+Provide a HTTP client object using IOCP to retrive data on Windows.
+
+Performing HTTP GET with auto decompression.
+
+```cpp
+net::http_client cli;
+// Perform and return a future object
+auto task = cli.get("http://ptsv2.com/t/math6-1609257285/post");
+auto& response = *task.get();
+const auto& buffers = response.buffers();
+const auto& headers = response.headers();
+stringstream ss;
+for (const auto& buffer : buffers)
+    ss << string(buffer.begin(), buffer.end());
+auto _ = ss.str();
+// The `_` possibly is:
+// HTTP/1.0 200 OK
+// Content-Type: text/plain; charset=utf-8
+// Vary: Accept-Encoding
+// Access-Control-Allow-Origin: *
+// Content-Encoding: gzip
+// X-Cloud-Trace-Context: 88c4c1c072ba4ef2b7c15dd84faf22ae
+// Date: Wed, 13 Jan 2021 04:35:46 GMT
+// Server: Google Frontend
+// Cache-Control: private
+// Content-Length: 77
+// 
+// Thank you for this dump. I hope you have a lovely day!
+```
+
+Performing HTTP POST.
+
+```cpp
+net::http_client cli;
+auto task = cli.post("http://ptsv2.com/t/math6-1609257285/post", make_shared<net::buffer_type>(net::buffer_type(5, '?')));
+auto& response = *task.get();
+const auto& buffers = response.buffers();
+const auto& headers = response.headers();
+stringstream ss;
+for (const auto& buffer : buffers)
+    ss << string(buffer.begin(), buffer.end());
+auto _ = ss.str();
+// The `_` possibly is:
+// HTTP/1.0 200 OK
+// Content-Type: text/plain; charset=utf-8
+// Vary: Accept-Encoding
+// Access-Control-Allow-Origin: *
+// Content-Encoding: gzip
+// X-Cloud-Trace-Context: 4ebaff822e3fa7f149dbf3f65acc92ba
+// Date: Wed, 13 Jan 2021 04:40:04 GMT
+// Server: Google Frontend
+// Cache-Control: private
+// Content-Length: 77
+// 
+// Thank you for this dump. I hope you have a lovely day!
+```
+
 ### `asynchronous file I/O`
 
 Read file in bytes.
